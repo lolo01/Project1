@@ -2,17 +2,17 @@
 #include <cmath>
 
 using namespace std;
-using namespace arma;
 
-void forwardsubs(double &b, int steps){
-    int end=(steps-1)%3;
-    int blocks=steps/3;
-    double temp;
-    for(int i=1;i<=blocks;i++){
-        temp=b[i];
-        b[i]=b[i+1];
-        b[i+1]=temp+2*b[i-1];
-        b[i+2]+=b[x+1];
+void forwardsubs(double *b, int steps){
+    for(int i=1;i<steps;i++){
+        b[i]=(i+1)*b[i]+b[i-1];
+    }
+}
+
+void backwardsubs(double *b, int steps){
+    b[steps]/=(steps+1);
+    for(int i=steps-2;i>=0;i--){
+        b[i]=(b[i]+4*b[i+1])/(steps+1);
     }
 }
 
@@ -34,6 +34,12 @@ int main(int argc, char *argv[])
     for(int i=0;i<steps;i++){
         b[i]=steplenghsteplength100*exp(10*x);
         x+=steplengh;
+    }
+    forwardsubs(b,steps);
+    backwardsubs(b,steps);
+
+    for(int i=0;i<steps;i++){
+        cout<<b[i]<<endl;
     }
 
     return(0);
